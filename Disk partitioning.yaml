@@ -1,0 +1,23 @@
+---
+- name: disk partitioning and mounting
+  hosts: all
+  tasks:
+    - name: create new partition
+      parted:
+        device: /dev/nvme0n1
+        number: 1
+        state: present
+        part_type: primary
+        fs_type: xfs
+
+    - name: formate partition using file system
+      filesystem:
+        fstype: xfs
+        dev: /dev/nvme0n1p1
+
+    - name: mounting
+      mount:
+        path: /mnt/data
+        src: /dev/nvme0n1p1
+        fstype: xfs
+        state: mounted
